@@ -2,8 +2,8 @@
 
 A demonstration project showcasing JQF + Zest.
 
-This project implements a testcase that reveals potential issues in Apache Commons Collections' PatriciaTrie
-implementation through fuzzing. JQF (https://github.com/rohanpadhye/JQF) is used to automatically generate test
+This project implements a testcase that reveals potential issues in Apache Commons Collections' [PatriciaTrie](https://commons.apache.org/proper/commons-collections/apidocs/org/apache/commons/collections4/trie/PatriciaTrie.html)
+implementation through fuzzing. JQF ([Github Link](https://github.com/rohanpadhye/JQF)) is used to automatically generate test
 inputs that may expose bugs in the mapping between regular Maps and Tries.
    
 Additional handwritten testcases are given as demonstrations of JQF.
@@ -12,11 +12,13 @@ Additional handwritten testcases are given as demonstrations of JQF.
 
 # Usage
 
-To run JQF on this class, run the following script in a project's root directory:
-`mvn jqf:fuzz -f pom.xml -Dclass=<className> -Dmethod="<methodName>"`
+Begin setting up maven by running `mvn clean test-compile`
 
-For example, the [PatriciaTrieTest](src/main/java/org/example/demos/PatriciaTrieTest.java) test class may be fuzzed as follows:
-`mvn jqf:fuzz -f pom.xml -Dclass=PatriciaTrieTest -Dmethod=testMap2Trie`
+To run JQF on this class, run the following script in a project's root directory:
+`mvn jqf:fuzz -Dclass=<path.to.ClassName> -Dmethod="<methodName>"`
+
+For example, the [PatriciaTrieTest](src/test/java/org/example/ptrie/PatriciaTrieTest.java) test class may be fuzzed as follows:
+`mvn jqf:fuzz -Dclass=org.example.ptrie.PatriciaTrieTest -Dmethod=testMap2Trie`
 
 ## Class Annotation
 
@@ -129,6 +131,12 @@ Valid coverage:       115 branches (0.18% of map
 ```
 
 A file will be generated in [target/fuzz-results](target/fuzz-results) with the class name, containing data about tests run and tests failed.
+
+Each test method that we run generates two folders: `corpus/` and `failures/`.
+
+The `corpus/` stores all interesting inputs that increased coverage of code base, while the `failures/` folder stores input that caused an assertion failure or uncaught exception.
+
+It also generates files that store data involving coverage with `coverage_hash`, fuzzing metrics with `plot_data`, and console output with `fuzz.log`.
 
 **TODO: how to read and interpret these files?**
 

@@ -1,4 +1,4 @@
-package org.example.demos;
+package org.example.ptrie;
 
 import edu.berkeley.cs.jqf.fuzz.Fuzz;
 import edu.berkeley.cs.jqf.fuzz.JQF;
@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
@@ -24,6 +25,7 @@ import static org.junit.Assume.assumeTrue;
  *     https://github.com/rohanpadhye/JQF?tab=readme-ov-file#example
  * </a>
  */
+
 @RunWith(JQF.class)
 public class PatriciaTrieTest {
 	@Fuzz
@@ -36,5 +38,16 @@ public class PatriciaTrieTest {
 
 		// The key should exist in the trie as well
 		assertTrue(trie.containsKey(key));  // fails when map = {"x": 1, "x\0": 2} and key = "x"
+	}
+
+	// put(key, value) method
+	// https://commons.apache.org/proper/commons-collections/apidocs/org/apache/commons/collections4/trie/AbstractPatriciaTrie.html#put(K,V)
+	@Fuzz
+	public void testPut(String key, int value) {
+		PatriciaTrie trie = new PatriciaTrie();
+		trie.put(key, value);
+
+		assertTrue(trie.containsKey(key));
+		assertEquals(Integer.valueOf(value), trie.get(key));
 	}
 }
