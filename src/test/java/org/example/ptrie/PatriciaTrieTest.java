@@ -15,7 +15,7 @@ import static org.junit.Assume.assumeTrue;
 /**
  * To run JQF on this class, run the following script in the project's root directory.
  * <code>
- *     mvn jqf:fuzz -f pom.xml -Dclass="PatriciaTrieTest" -Dmethod="testMap2Trie" -DexitOnCrash
+ *     mvn jqf:fuzz -f pom.xml -Dclass="org.example.ptrie.PatriciaTrieTest" -Dmethod="testMap2Trie" -DexitOnCrash
  * </code>
  * <br>
  * <br>
