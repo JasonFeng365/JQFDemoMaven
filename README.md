@@ -66,7 +66,8 @@ C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.2.1\plugins\mave
 4. Optional: You may choose to add the `bin` folder to the PATH environment variable for easier usage.
 
 This full path may be substituted for the `mvn` command, if `mvn` is not in the PATH environment variable.
-For example:
+If the path has spaces, make sure to use quotation marks, so the spaces are taken into account.
+This example shows execution of `mvn` using the full path:
 `"C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.2.1\plugins\maven\lib\maven3\bin\mvn" jqf:fuzz -Dclass=org.example.ptrie.PatriciaTrieTest -Dmethod=testMap2Trie`
 
 Note for Windows: Powershell may not like the double quotes. If Powershell doesn't work, try running it in Command Prompt.
