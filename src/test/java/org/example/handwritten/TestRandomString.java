@@ -21,22 +21,22 @@ public class TestRandomString {
 	 * @param length The number of digits in the generated number
 	 * @return A random number with the specified number of digits
 	 */
-	private static long generateRandomNumber(int length, long seed) {
-		long minVal = (long)Math.pow(10, length-1);
+	private static int generateRandomNumber(int length, int seed) {
+		int minVal = (int)Math.pow(10, length-1);
 //		+1 makes the range inclusive, instead of exclusive
 //		Bug in Jason's production-level code. Whoops! Glad nobody saw that
 		Random random = new Random(seed);
-		long rand = (long)(random.nextDouble()*minVal*9 + 1);
+		int rand = (int)(random.nextDouble()*minVal*9 + 1);
 		return minVal + rand;
 	}
 
 	@Fuzz
 //	Maybe just use any integer? But too slow, even with assumeTrue...
 //	public void testRNG(int length) {
-	public void testRNG(@From(RandomStringIntGen.class) int length, long seed) {
+	public void testRNG(@From(RandomStringIntGen.class) int length, int seed) {
 		assumeTrue(1 <= length && length <= 8);
-		long randNum = generateRandomNumber(length, seed);
-		String randNumString = Long.toString(randNum);
+		int randNum = generateRandomNumber(length, seed);
+		String randNumString = Integer.toString(randNum);
 
 		assertEquals(length, randNumString.length());
 	}
