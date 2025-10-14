@@ -12,7 +12,7 @@ Additional handwritten testcases are given as demonstrations of JQF.
 
 # Usage
 
-Begin setting up Maven by running `mvn clean test-compile`. This must be run whenever tests are changed or new tests are added, or JQF may not detect them.
+Begin setting up Maven by running `mvn test-compile`. **This must be run whenever tests are changed or new tests are added**, or JQF may not detect them.
 
 To run JQF on this class, run the following script in a project's root directory:
 `mvn jqf:fuzz -Dclass=<path.to.ClassName> -Dmethod="<methodName>"`
@@ -67,7 +67,7 @@ C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.2.1\plugins\mave
 
 This full path may be substituted for the `mvn` command, if `mvn` is not in the PATH environment variable.
 If the path has spaces, make sure to use quotation marks, so the spaces are taken into account.
-This example shows execution of `mvn` using the full path:
+This example shows execution of `mvn` using the full path on Windows:
 `"C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2025.2.1\plugins\maven\lib\maven3\bin\mvn" jqf:fuzz -Dclass=org.example.ptrie.PatriciaTrieTest -Dmethod=testMap2Trie`
 
 Note for Windows: Powershell may not like the double quotes. If Powershell doesn't work, try running it in Command Prompt.
@@ -108,11 +108,21 @@ The `corpus/` stores all interesting inputs that increased coverage of code base
 
 It also generates files that store data involving coverage with `coverage_hash`, fuzzing metrics with `plot_data`, and console output with `fuzz.log`.
 
-**TODO: how to read and interpret these files?**
+# Reading fuzz output files
+
+The fuzzer saves outputs that fail within [target/fuzz-results](target/fuzz-results). These files are not in a human-readable format. Instead, the `Dinput` flag re-runs the program with the given inputs from the file:
+`mvn jqf:repro -Dclass=<fully-qualified-class-name> -Dmethod=<method-name> -Dinput=<file-or-directory-name>`
+
+For example, to view an input that fails that PatriciaTrie test:
+`mvn jqf:repro -Dclass=org.example.ptrie.PatriciaTrieTest -Dmethod=testMap2Trie -Dinput=target/fuzz-results/org.example.ptrie.PatriciaTrieTest/testMap2Trie/failures/id_000000`
+
+You may then 1) edit the original method to output the erroneous input or 2) define a new method to output the erroneous input. As an example, the [PatriciaTrieTest](src/test/java/org/example/ptrie/PatriciaTrieTest.java) class has a function to output raw and hex values of the maps' keys. 
 
 # Troubleshooting
 
-**TODO**
+### I added a new test or changed a previous case, but the old output keeps appearing?
+Run `mvn test-compile` to rebuild the project before trying to fuzz modified code.
 
 Citations
 https://rohan.padhye.org/files/jqf-issta19.pdf
+https://github.com/rohanpadhye/JQF/wiki/JQF-Maven-Plugin

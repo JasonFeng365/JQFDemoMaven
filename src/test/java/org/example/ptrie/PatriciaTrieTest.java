@@ -6,7 +6,8 @@ import org.apache.commons.collections4.Trie;
 import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.junit.runner.RunWith;
 
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -49,5 +50,58 @@ public class PatriciaTrieTest {
 
 		assertTrue(trie.containsKey(key));
 		assertEquals(Integer.valueOf(value), trie.get(key));
+	}
+
+
+
+	@Fuzz
+	public void printTrie(Map<String, Integer> map, String key) {
+		// Key should exist in map
+		assumeTrue(map.containsKey(key));   // the test is invalid if this predicate is not true
+
+		// Create new trie with input `map`
+		Trie<String, Integer> trie = new PatriciaTrie<>(map);
+
+//		Weird output...
+		System.out.println("Printing all keys:");
+		System.out.println(new ArrayList<>(map.keySet()));
+		System.out.println(new ArrayList<>(trie.keySet()));
+		System.out.println(BREAK);
+
+		System.out.println("Key to find, with length = "+key.length()+":");
+		System.out.println(key);
+		System.out.println(toSpacedHexes(key));
+		System.out.println(BREAK);
+
+		System.out.println("Printing map's keys in hex:");
+		var mapKeys = sortAndFormatKeys(map.keySet());
+		for (var hex : mapKeys) System.out.println(hex);
+		System.out.println(BREAK);
+
+		System.out.println("Printing trie's keys in hex:");
+		var trieKeys = sortAndFormatKeys(trie.keySet());
+		for (var hex : trieKeys) System.out.println(hex);
+		System.out.println(BREAK);
+
+		// The key should exist in the trie as well
+		assertTrue(trie.containsKey(key));  // fails when map = {"x": 1, "x\0": 2} and key = "x"
+	}
+
+
+	private static final String BREAK = "=".repeat(32);
+	private String toSpacedHexes(String string) {
+		return string.chars()
+				.mapToObj(Integer::toString)
+				.collect(Collectors.joining(" "));
+	}
+
+	private List<String> sortAndFormatKeys(Collection<String> keys) {
+		ArrayList<String> keyList = new ArrayList<>(keys);
+		Collections.sort(keyList);
+
+		List<String> hexList = keyList.stream()
+				.map(this::toSpacedHexes)
+				.collect(Collectors.toList());
+		return hexList;
 	}
 }
